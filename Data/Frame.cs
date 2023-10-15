@@ -7,7 +7,7 @@ public class Frame
     public int FrameId { get; }
     public int FirstScore { get; }
     public int SecondScore { get; set; }
-    
+
     // 10회에만 -> 10회에 2번던져서 스페어 혹은 스트라이크 처리시에 마지막 보너스를 던질 기회가 생김
     public int ThirdScore { get; set; }
     public int TotalScore { get; set; }
@@ -16,9 +16,9 @@ public class Frame
 
     public Frame()
     {
-        ScoringType = ScoringType.NOT_YET;
+        ScoringType = NOT_YET;
     }
-    
+
     // 스트라이크의 경우
     public Frame(int frameId, int firstScore)
     {
@@ -33,16 +33,9 @@ public class Frame
         SecondScore = secondScore;
         ScoringType = FirstScore + secondScore == 10 ? SPARE : NONE;
     }
-    
-    // 스트라이크 여부
-    public bool IsStrike()
+
+    public void CalculateFrameResult()
     {
-        return FirstScore == 10;
-    }
-    
-    // 스페어여부
-    public bool IsSpare()
-    {
-        return FirstScore + SecondScore == 10;
+        TotalScore = FirstScore + SecondScore + ThirdScore;
     }
 }

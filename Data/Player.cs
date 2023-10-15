@@ -1,4 +1,6 @@
-﻿namespace BowlingGame.Data;
+﻿using static BowlingGame.Data.ScoringType;
+
+namespace BowlingGame.Data;
 
 public class Player
 {
@@ -25,5 +27,31 @@ public class Player
     public void AddTotalResult()
     {
         TotalScore = Frames.Sum(frame => frame.TotalScore);
+    }
+
+    public void CalculateEachFrame(Player player)
+    {
+        for (var i = 0; i < player.Frames.Count; i++)
+        {
+            switch (player.Frames[i].ScoringType)
+            {
+                case STRIKE when player.Frames[i + 1].ScoringType == STRIKE:
+                    player.Frames[i].TotalScore = player.Frames[i].TotalScore + player.Frames[i + 1].FirstScore +
+                                                  player.Frames[i + 2].FirstScore;
+                    break;
+                case STRIKE when player.Frames[i + 1].ThirdScore != 0:
+                    player.Frames[i].TotalScore += player.Frames[i + 1].FirstScore + player.Frames[i + 1].SecondScore;
+                    break;
+                case STRIKE:
+                    player.Frames[i].TotalScore += player.Frames[i + 1].TotalScore;
+                    break;
+                case SPARE:
+                    player.Frames[i].TotalScore += player.Frames[i + 1].FirstScore;
+                    break;
+                default:
+                    player.Frames[i].TotalScore = player.Frames[i].TotalScore;
+                    break;
+            }
+        }
     }
 }
