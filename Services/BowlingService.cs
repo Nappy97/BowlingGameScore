@@ -33,40 +33,66 @@ public class BowlingService
 
             if (playerFrame.ScoringType == SPARE)
             {
-                Console.WriteLine("스페어");
+                Console.WriteLine("스페어!");
             }
 
             // 스페어처리 실패시
             playerFrame.TotalScore = totalScore;
         }
 
+        // 10회에 스트라이크 혹은 스페어 처리시 보너스 기회가 생김
+        if (frameIdx == 10)
+        {
+            Console.WriteLine($"{frameIdx}프레임에서 첫 두번의 투구에서 스페어 혹은 스트라이크 처리시 보너스를 칠 수 있는 기회가 있습니다. ");
+            Console.WriteLine($"{player.PlayerId}번 플레이어의 두번째 결과를 입력해주세요");
+            var secondScore = int.Parse(Console.ReadLine());
+
+            // 두번째 결과 저장
+            playerFrame.InputSecondResult(secondScore);
+
+            // 두결과 합계
+            var totalScore = firstScore + secondScore;
+
+            if (totalScore >= 10)
+            {
+                Console.WriteLine("Bonus!");
+                Console.WriteLine($"{player.PlayerId}번 플레이어의 세번째 결과를 입력해주세요");
+                var thirdScore = int.Parse(Console.ReadLine());
+                playerFrame.ThirdScore = thirdScore;
+            }
+
+            playerFrame.TotalScore = firstScore + secondScore + playerFrame.ThirdScore;
+            var result9th = CalculateFor9th(player, firstScore, secondScore);
+            if (player.Frames[8].TotalScore == 0)
+                player.Frames[8].TotalScore = result9th;
+        }
+
+
         player.AddFrameResult(playerFrame);
 
         // 이전에 스트라이크 친 기록이 있는지, 있다면 현재는 점수를 낼 수 있는지 판단 후 저장
         var hasStrikeBefore = HasStrikeBefore(player, frameIdx, out var totalResult, out var resultFrameIdx);
-
         if (!hasStrikeBefore) return;
 
-        var frame = PlayerFrame(player, resultFrameIdx + 1);
+        var frame = PlayerFrame(player, resultFrameIdx);
         frame.TotalScore = totalResult;
-        Console.WriteLine($"{player.PlayerId}의 {frameIdx}까지의 점수합계는 {frame.TotalScore}");
     }
 
-    // 총합을 낼 수 있는지를 계산
+// 총합을 낼 수 있는지를 계산
     private bool HasStrikeBefore(Player player, int frameIdx, out int totalResult, out int resultFrameIdx)
     {
         totalResult = 0;
         resultFrameIdx = 0;
 
         // 프레임이 1회면 무시 
-        if (frameIdx <= 1)
+        if (frameIdx <= 2)
             return false;
 
         // 검사할 프레임의 이전 프레임부터 역순으로 찾으면서 스트라이크가 있는지 확인
         for (var i = frameIdx - 2; i >= 0; i--)
         {
-            var currentFrame = PlayerFrame(player, i + 1);
-            resultFrameIdx = i;
+            var currentFrame = PlayerFrame(player, i); // 1번프레임
+            resultFrameIdx = i; // 0
 
             // 해당 프레임이 스트라이크라면
             // 아직 2번굴리기전이라면 무시하는 로직
@@ -79,9 +105,11 @@ public class BowlingService
                 {
                     totalResult = currentFrameAndNextFrameFirstScore + PlayerFrame(player, i + 2).FirstScore;
                 }
-                // 해당 프레임 +1 회가 스트라이크가 아닌 경우 그 회의 첫타와 두번째 타 결과 저장
-
-                totalResult = currentFrameAndNextFrameFirstScore + PlayerFrame(player, i + 1).SecondScore;
+                else
+                {
+                    // 해당 프레임 +1 회가 스트라이크가 아닌 경우 그 회의 첫타와 두번째 타 결과 저장
+                    totalResult = currentFrameAndNextFrameFirstScore + PlayerFrame(player, i + 1).SecondScore;
+                }
 
                 // totalResult가 0이 아니면 루프를 종료하고 true를 반환
                 if (totalResult != 0)
@@ -102,7 +130,7 @@ public class BowlingService
         return false;
     }
 
-    // 스트라이크 가 있는 프레임의 점수를 계산할만큼 게임이 진행되었는지 판단하는 메소드
+// 스트라이크 가 있는 프레임의 점수를 계산할만큼 게임이 진행되었는지 판단하는 메소드
     private bool IsGameInProgress(Player player, int frameIdx)
     {
         if (frameIdx <= 0)
@@ -115,7 +143,7 @@ public class BowlingService
                PlayerFrame(player, frameIdx).SecondScore != 0;
     }
 
-    // 프레임 내역을 얻는법
+// 프레임 내역을 얻는법
     private Frame PlayerFrame(Player player, int frameIdx)
     {
         return player.Frames[frameIdx - 1];
@@ -133,5 +161,17 @@ public class BowlingService
         var scoreDiff = Math.Abs(winner.TotalScore - loser.TotalScore);
 
         return (winner, scoreDiff);
+    }
+
+    // 10회인경우 9회 점수 산출
+    public int CalculateFor9th(Player player, int firstScore, int secondScore)
+    {
+        var currentFrame = PlayerFrame(player, 9); // 9회차 프레임
+        return currentFrame.ScoringType switch
+        {
+            STRIKE => currentFrame.FirstScore + firstScore + secondScore,
+            SPARE => currentFrame.FirstScore + currentFrame.SecondScore + firstScore,
+            _ => 0
+        };
     }
 }
