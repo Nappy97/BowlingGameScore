@@ -35,10 +35,12 @@ public class Player
         {
             switch (player.Frames[i].ScoringType)
             {
+                // 스트라이크이고, 다음회도 스트라이크일경우
                 case STRIKE when player.Frames[i + 1].ScoringType == STRIKE:
                     player.Frames[i].TotalScore = player.Frames[i].TotalScore + player.Frames[i + 1].FirstScore +
                                                   player.Frames[i + 2].FirstScore;
                     break;
+                // 스트라이크 이고, 9회일때
                 case STRIKE when player.Frames[i + 1].ThirdScore != 0:
                     player.Frames[i].TotalScore += player.Frames[i + 1].FirstScore + player.Frames[i + 1].SecondScore;
                     break;
