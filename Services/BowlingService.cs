@@ -19,6 +19,29 @@ public class BowlingService
         if (playerFrame.ScoringType == STRIKE)
         {
             Console.WriteLine("스트라이크!");
+            // 10회에 스트라이크 혹은 스페어 처리시 보너스 기회가 생김
+            if (frameIdx == 10)
+            {
+                Console.WriteLine($"{frameIdx}프레임에서 첫 두번의 투구에서 스페어 혹은 스트라이크 처리시 보너스를 칠 수 있는 기회가 있습니다. ");
+                Console.WriteLine($"{player.PlayerId}번 플레이어의 두번째 결과를 입력해주세요");
+                var secondScore = int.Parse(Console.ReadLine());
+
+                // 두번째 결과 저장
+                playerFrame.InputSecondResult(secondScore);
+
+                // 두결과 합계
+                var totalScore = firstScore + secondScore;
+
+                if (totalScore >= 10)
+                {
+                    Console.WriteLine("Bonus!");
+                    Console.WriteLine($"{player.PlayerId}번 플레이어의 세번째 결과를 입력해주세요");
+                    var thirdScore = int.Parse(Console.ReadLine());
+                    playerFrame.ThirdScore = thirdScore;
+                }
+
+                playerFrame.TotalScore = firstScore + secondScore + playerFrame.ThirdScore;
+            }
         }
         else
         {
@@ -40,34 +63,11 @@ public class BowlingService
             playerFrame.TotalScore = totalScore;
         }
 
-        // 10회에 스트라이크 혹은 스페어 처리시 보너스 기회가 생김
-        if (frameIdx == 10)
-        {
-            Console.WriteLine($"{frameIdx}프레임에서 첫 두번의 투구에서 스페어 혹은 스트라이크 처리시 보너스를 칠 수 있는 기회가 있습니다. ");
-            Console.WriteLine($"{player.PlayerId}번 플레이어의 두번째 결과를 입력해주세요");
-            var secondScore = int.Parse(Console.ReadLine());
-
-            // 두번째 결과 저장
-            playerFrame.InputSecondResult(secondScore);
-
-            // 두결과 합계
-            var totalScore = firstScore + secondScore;
-
-            if (totalScore >= 10)
-            {
-                Console.WriteLine("Bonus!");
-                Console.WriteLine($"{player.PlayerId}번 플레이어의 세번째 결과를 입력해주세요");
-                var thirdScore = int.Parse(Console.ReadLine());
-                playerFrame.ThirdScore = thirdScore;
-            }
-
-            playerFrame.TotalScore = firstScore + secondScore + playerFrame.ThirdScore;
-        }
 
         playerFrame.CalculateFrameResult();
         player.AddFrameResult(playerFrame);
     }
-    
+
     // 보드 총괄계산
     public (Player winner, int scoreDiff) CalculateScoreBoard(List<Player> players)
     {
