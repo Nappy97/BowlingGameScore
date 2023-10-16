@@ -24,8 +24,6 @@ class Program
             {
                 bowlingService.InputGameScore(player, frameIdx);
             }
-
-            // DisplayScore(players[0], players[1]);
         }
 
         var calculateScoreBoard = bowlingService.CalculateScoreBoard(players);

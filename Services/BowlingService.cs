@@ -67,26 +67,7 @@ public class BowlingService
         playerFrame.CalculateFrameResult();
         player.AddFrameResult(playerFrame);
     }
-
-// 스트라이크 가 있는 프레임의 점수를 계산할만큼 게임이 진행되었는지 판단하는 메소드
-    private bool IsGameInProgress(Player player, int frameIdx)
-    {
-        if (frameIdx <= 0)
-        {
-            return PlayerFrame(player, frameIdx + 2).FirstScore != 10;
-        }
-
-        // TODO 전제조건이 뭔가 잘못됨 
-        return PlayerFrame(player, frameIdx + 1).ScoringType != NOT_YET ||
-               PlayerFrame(player, frameIdx).SecondScore != 0;
-    }
-
-// 프레임 내역을 얻는법
-    private Frame PlayerFrame(Player player, int frameIdx)
-    {
-        return player.Frames[frameIdx - 1];
-    }
-
+    
     // 보드 총괄계산
     public (Player winner, int scoreDiff) CalculateScoreBoard(List<Player> players)
     {
