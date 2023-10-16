@@ -2,8 +2,8 @@
 
 public enum ScoringType
 {
-    STRIKE,
-    SPARE,
-    NONE,
-    NOT_YET
+    Strike,
+    Spare,
+    None,
+    NotYet
 }

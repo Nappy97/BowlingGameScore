@@ -16,7 +16,7 @@ public class Frame
 
     public Frame()
     {
-        ScoringType = NOT_YET;
+        ScoringType = NotYet;
     }
 
     // 스트라이크의 경우
@@ -24,14 +24,14 @@ public class Frame
     {
         FrameId = frameId;
         FirstScore = firstScore;
-        ScoringType = firstScore == 10 ? STRIKE : NONE;
+        ScoringType = firstScore == 10 ? Strike : None;
     }
 
     // 두번째 결과 저장
     public void InputSecondResult(int secondScore)
     {
         SecondScore = secondScore;
-        ScoringType = FirstScore + secondScore == 10 ? SPARE : NONE;
+        ScoringType = FirstScore + secondScore == 10 ? Spare : None;
     }
 
     public void CalculateFrameResult()

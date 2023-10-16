@@ -16,7 +16,7 @@ public class BowlingService
 
         // 첫번째 결과저장
         var playerFrame = new Frame(frameIdx, firstScore);
-        if (playerFrame.ScoringType == STRIKE)
+        if (playerFrame.ScoringType == Strike)
         {
             Console.WriteLine("스트라이크!");
             // 10회에 스트라이크 혹은 스페어 처리시 보너스 기회가 생김
@@ -54,7 +54,7 @@ public class BowlingService
             // 두결과 합계
             var totalScore = firstScore + secondScore;
 
-            if (playerFrame.ScoringType == SPARE)
+            if (playerFrame.ScoringType == Spare)
             {
                 Console.WriteLine("스페어!");
             }

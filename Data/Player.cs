@@ -8,50 +8,50 @@ public class Player
     public int PlayerId { get; }
 
     // 총합 스코어
-    public int TotalScore { get; set; }
+    public int TotalScore { get; private set; }
 
     // 각 회의 스코어
-    public List<Frame> Frames = new();
+    public List<Frame> _Frames = new();
 
     public Player(int playerId)
     {
         PlayerId = playerId;
-        Frames.AddRange(Enumerable.Range(1, 10).Select(_ => new Frame()));
+        _Frames.AddRange(Enumerable.Range(1, 10).Select(_ => new Frame()));
     }
 
     public void AddFrameResult(Frame frame)
     {
-        Frames[frame.FrameId - 1] = frame;
+        _Frames[frame.FrameId - 1] = frame;
     }
 
     public void AddTotalResult()
     {
-        TotalScore = Frames.Sum(frame => frame.TotalScore);
+        TotalScore = _Frames.Sum(frame => frame.TotalScore);
     }
 
     public void CalculateEachFrame(Player player)
     {
-        for (var i = 0; i < player.Frames.Count; i++)
+        for (var i = 0; i < player._Frames.Count; i++)
         {
-            switch (player.Frames[i].ScoringType)
+            switch (player._Frames[i].ScoringType)
             {
                 // 스트라이크이고, 다음회도 스트라이크일경우
-                case STRIKE when player.Frames[i + 1].ScoringType == STRIKE:
-                    player.Frames[i].TotalScore = player.Frames[i].TotalScore + player.Frames[i + 1].FirstScore +
-                                                  player.Frames[i + 2].FirstScore;
+                case Strike when player._Frames[i + 1].ScoringType == Strike:
+                    player._Frames[i].TotalScore = player._Frames[i].TotalScore + player._Frames[i + 1].FirstScore +
+                                                  player._Frames[i + 2].FirstScore;
                     break;
                 // 스트라이크 이고, 9회일때
-                case STRIKE when player.Frames[i + 1].ThirdScore != 0:
-                    player.Frames[i].TotalScore += player.Frames[i + 1].FirstScore + player.Frames[i + 1].SecondScore;
+                case Strike when player._Frames[i + 1].ThirdScore != 0:
+                    player._Frames[i].TotalScore += player._Frames[i + 1].FirstScore + player._Frames[i + 1].SecondScore;
                     break;
-                case STRIKE:
-                    player.Frames[i].TotalScore += player.Frames[i + 1].TotalScore;
+                case Strike:
+                    player._Frames[i].TotalScore += player._Frames[i + 1].TotalScore;
                     break;
-                case SPARE:
-                    player.Frames[i].TotalScore += player.Frames[i + 1].FirstScore;
+                case Spare:
+                    player._Frames[i].TotalScore += player._Frames[i + 1].FirstScore;
                     break;
                 default:
-                    player.Frames[i].TotalScore = player.Frames[i].TotalScore;
+                    player._Frames[i].TotalScore = player._Frames[i].TotalScore;
                     break;
             }
         }
